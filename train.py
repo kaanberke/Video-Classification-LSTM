@@ -13,7 +13,7 @@ import pandas as pd
 
 class temp:
     def __init__(self):
-        self.batch_size = 64
+        self.batch_size = 32
         self.epochs = 50
 
 
@@ -61,7 +61,7 @@ class temp:
         return X, y
 
     def train_model(self, X_train, X_val, y_train, y_val, e = 1):
-        for i in e:
+        for i in range(e):
             model = Sequential()
             model.add(LSTM(256, dropout=0.2, input_shape=(len(X_train[0]),
                                                           len(X_train[0][0]))))
@@ -99,6 +99,6 @@ if __name__ == "__main__":
     y = np.array(pd.get_dummies(y))[:, 1:] # Get dummies, but drop first column..
     X = np.array(X)
     X_train, X_val, y_train, y_val = train_test_split(X, y)
-    model = a.train_model(X_train, X_val, y_train, y_val, e=1)
+    model = a.train_model(X_train, X_val, y_train, y_val, e=3)
 
 
