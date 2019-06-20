@@ -111,5 +111,5 @@ if __name__ == "__main__":
     y = np.array(pd.get_dummies(y))[:, 1:] # Get dummies, but drop first column..
     X = np.array(X)
     X_train, X_val, y_train, y_val = train_test_split(X, y)
-    model = a.train_model(X_train, X_val, y_train, y_val, e=3)
+    model = clf.train_model(X_train, X_val, y_train, y_val, e=3)
 
