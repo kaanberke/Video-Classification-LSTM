@@ -11,9 +11,9 @@ from keras.optimizers import SGD
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 import pandas as pd
 
-class temp:
+class VideoClassifierLSTM:
     def __init__(self):
-        self.batch_size = 32
+        self.batch_size = 128
         self.epochs = 50
 
 
@@ -51,7 +51,9 @@ class temp:
                             break
 
                         img_gray = cv2.cvtColor(frame, color)
-                        resized_frame = cv2.resize(img_gray, (224, 224), interpolation = cv2.INTER_AREA)
+                        resized_frame = cv2.resize(img_gray, 
+                                                   (224, 224), 
+                                                   interpolation = cv2.INTER_AREA)
                         X.append(resized_frame)
                         y.append(label)
         print(f"Total {len(y)} frame(s) out of {video_num} video(s) were loaded.")
@@ -67,15 +69,26 @@ class temp:
                                                           len(X_train[0][0]))))
             model.add(Dense(1024, activation='relu'))
             model.add(Dropout(0.5))
-            model.add(Dense(1024, activation='relu'))
+            model.add(Dense(1024, activation='relu')) 
             model.add(Dropout(0.5))
             model.add(Dense(2, activation='softmax'))
             sgd = SGD(lr=0.00005, decay=1e-6, momentum=0.9, nesterov=True)
-            model.compile(optimizer=sgd, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+            model.compile(optimizer=sgd, 
+                          loss='sparse_categorical_crossentropy', 
+                          metrics=['accuracy'])
+            
             if (os.path.exists('video_LSTM.h5')):
                 model.load_weights('video_LSTM.h5')
-            callbacks = [EarlyStopping(monitor='val_loss', patience=10, verbose=0),
-                         ModelCheckpoint('video_LSTM.h5', monitor='val_loss', save_best_only=True, verbose=0)]
+                
+            callbacks = [
+                EarlyStopping(monitor='val_loss', 
+                              patience=5, 
+                              verbose=0),
+                ModelCheckpoint('video_LSTM.h5', 
+                                monitor='val_loss', 
+                                save_best_only=True, 
+                                verbose=0),
+            ]
             model.fit(X_train, y_train,
                       validation_data=(X_val, y_val),
                       callbacks=callbacks,
@@ -83,14 +96,13 @@ class temp:
                       batch_size = self.batch_size,
                       epochs= self.epochs,
                       verbose=1,
-
             )
         return model
 
 
 if __name__ == "__main__":
-    a = temp()
-    X, y = a.load_data('videos',
+    clf = VideoClassifierLSTM()
+    X, y = clf.load_data('videos',
                        ext='avi',
                        c='gray',
                        X_npy_path='X.npy',
@@ -100,5 +112,4 @@ if __name__ == "__main__":
     X = np.array(X)
     X_train, X_val, y_train, y_val = train_test_split(X, y)
     model = a.train_model(X_train, X_val, y_train, y_val, e=3)
-
 
