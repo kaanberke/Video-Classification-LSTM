@@ -91,14 +91,14 @@ class VideoClassifierLSTM:
                                 save_best_only=True, 
                                 verbose=0),
             ]
-            model.fit(X_train, y_train,
-                      validation_data=(X_val, y_val),
-                      callbacks=callbacks,
-                      shuffle=True,
-                      batch_size = self.batch_size,
-                      epochs= self.epochs,
-                      verbose=1,
-            )
+            # model.fit(X_train, y_train,
+            #           validation_data=(X_val, y_val),
+            #           callbacks=callbacks,
+            #           shuffle=True,
+            #           batch_size = self.batch_size,
+            #           epochs= self.epochs,
+            #           verbose=1,
+            # )
         return model
 
 def predictor(model=None,
@@ -125,8 +125,8 @@ def predictor(model=None,
 
         for root, dirs, files in os.walk(path):
             for file in tqdm(files):
-                img = cv2.imread(file)
-                #img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                img = cv2.imread(os.path.join(root, file))
+                img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 resized_frame = cv2.resize(img,
                                            (224, 224),
                                            interpolation=cv2.INTER_AREA)
@@ -181,5 +181,5 @@ if __name__ == "__main__":
     X_train, X_val, y_train, y_val = train_test_split(X, y)
     model = clf.train_model(X_train, X_val, y_train, y_val, e=1)
     y_pred = predictor(model,
-                       path='videos/good/MTL-DEMO-0A12-0D50-[1]-P07-FP2(2).avi',
-                       kind='video')
+                       path='validate/bad',
+                       kind='images')
