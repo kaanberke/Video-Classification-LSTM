@@ -4,9 +4,8 @@ import numpy as np
 import cv2
 from tqdm import tqdm
 from sklearn.model_selection import train_test_split
-from keras.utils.np_utils import to_categorical
 from keras.models import Sequential
-from keras.layers import Dropout, Flatten, Dense
+from keras.layers import Dropout, Dense
 from keras.layers import LSTM
 from keras.optimizers import SGD
 from keras.callbacks import EarlyStopping, ModelCheckpoint
@@ -91,14 +90,14 @@ class VideoClassifierLSTM:
                                 save_best_only=True, 
                                 verbose=0),
             ]
-            # model.fit(X_train, y_train,
-            #           validation_data=(X_val, y_val),
-            #           callbacks=callbacks,
-            #           shuffle=True,
-            #           batch_size = self.batch_size,
-            #           epochs= self.epochs,
-            #           verbose=1,
-            # )
+            model.fit(X_train, y_train,
+                      validation_data=(X_val, y_val),
+                      callbacks=callbacks,
+                      shuffle=True,
+                      batch_size = self.batch_size,
+                      epochs= self.epochs,
+                      verbose=1,
+            )
         return model
 
 def predictor(model=None,
